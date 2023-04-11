@@ -45,13 +45,15 @@ class WordsBox(StackLayout):
         super().__init__(**kwargs)
         self.words = None
         self.font_size = sp(20)
-        self.initialize()
+        self.initialize_words_list()
 
-    def initialize(self):
+    def initialize_words_list(self):
+        """ Pulls random words from the dictionary """
         self.words = initialize_words_list()
         self.populate_words()
 
     def populate_words(self):
+        """ Populates the list of words in the Widget """
         for word in self.words:
             label = WordLabel(text=word)
             label.font_size = self.font_size
@@ -61,9 +63,10 @@ class WordsBox(StackLayout):
 
     def reset(self):
         self.clear_widgets()
-        self.initialize()
+        self.initialize_words_list()
         self.font_size = sp(20)
         self.parent.scroll_y = 1
+
 
 class WordsInput(MDTextField):
 
@@ -86,8 +89,9 @@ class WordsInput(MDTextField):
         self.wrong_chars = 0
         self.timer_seconds = 60
 
+        # score popup
         self.dialog = MDDialog(type='custom', content_cls=ResultsPopup(), buttons=[
-            MDFlatButton(text='OK', on_release=self.close_dialog)])
+                               MDFlatButton(text='OK', on_release=self.close_dialog)])
 
     def evaluate_typed_word(self, text: str) -> None:
         """ Main function checking the entry and calling all modifiers/validators """
@@ -103,6 +107,7 @@ class WordsInput(MDTextField):
 
     @do_not_run_twice
     def on_space_action(self, typed_word: str) -> None:
+        """ Handles all actions for typed word """
         self.current_word_label = self.parent.parent.ids['words_text'].children[-self.current_word_index - 1]
         self.next_word_label = self.parent.parent.ids['words_text'].children[-(self.current_word_index + 2)]
 
@@ -112,6 +117,7 @@ class WordsInput(MDTextField):
         self.do_scroll()
 
     def color_words(self, typed_word: str) -> None:
+        """ Handles the visual part of the words """
         current_word = self.current_word_label.text
 
         if typed_word == current_word:
@@ -141,7 +147,7 @@ class WordsInput(MDTextField):
         return pm
 
     def do_scroll(self):
-        """ Manage the text scroll when needed """
+        """ Manages the text scroll when going to 3rd visible row """
         current_word_pos_y = self.current_word_label.pos[1]
         next_word_pos_y = self.next_word_label.pos[1]
 
@@ -159,6 +165,7 @@ class WordsInput(MDTextField):
         self.minute_timer()
 
     def count_seconds(self, dt):
+        """ Manages the timer and the end of the test """
         if self.timer_seconds > 0:
             self.timer_seconds -= 1
             self.parent.parent.ids['timer'].text = str(self.timer_seconds)
@@ -176,6 +183,7 @@ class WordsInput(MDTextField):
         self.text = ""
 
     def update_final_score(self):
+        """ Updates the final score in the top bar and the score popup """
         corrected_wpm = self.correct_words
         corrected_cpm = self.correct_chars
         total_cpm = corrected_cpm + self.wrong_chars

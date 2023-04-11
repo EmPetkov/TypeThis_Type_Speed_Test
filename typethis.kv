@@ -1,0 +1,118 @@
+MainLayout:
+<MainLayout>:
+    id: main_layout
+    orientation: 'vertical'
+    MDGridLayout:
+        id: content_layout
+        cols: 3
+        rows: 1
+        md_bg_color: app.theme_cls.primary_color
+        size_hint: 1, None
+        height: dp(75)
+        MDBoxLayout:
+            orientation: 'horizontal'
+            spacing: dp(5)
+            MDLabel:
+                text: "WPM: "
+                halign: 'right'
+            MDLabel:
+                id: wpm
+                text: "?"
+                halign: 'left'
+        MDBoxLayout:
+            orientation: 'horizontal'
+            spacing: dp(5)
+            MDLabel:
+                text: "CPM: "
+                halign: 'right'
+            MDLabel:
+                id: cpm
+                text: "?"
+                halign: 'left'
+        MDBoxLayout:
+            orientation: 'horizontal'
+            spacing: dp(5)
+            MDLabel:
+                text: "Time: "
+                halign: 'right'
+            MDLabel:
+                id: timer
+                text: "60"
+                halign: 'left'
+    MDFloatLayout:
+        md_bg_color: app.theme_cls.primary_light
+        size_hint: 1, None
+        height: '75dp'
+        MDIconButton:
+            id: resize_up
+            icon: "format-font-size-increase"
+            on_release: app.font_up()
+            pos_hint: {'center_x': 0.9, 'center_y': 0.5}
+            theme_text_color: "Custom"
+            text_color: app.theme_cls.primary_dark
+        MDIconButton:
+            id: resize_down
+            icon: "format-font-size-decrease"
+            on_release: app.font_down()
+            pos_hint: {'center_x': 0.95, 'center_y': 0.5}
+            theme_text_color: "Custom"
+            text_color: app.theme_cls.primary_dark
+    ScrollView:
+        id: words_scroll_view
+        size: self.size
+        WordsBox:
+            id: words_text
+    MDBoxLayout:
+        id: input_layout
+        md_bg_color: app.theme_cls.primary_light
+        size_hint: 1, None
+        height: dp(80)
+        padding: dp(50), dp(15), dp(50), dp(15)
+        spacing: dp(50)
+        WordsInput:
+            id: type_input
+            padding: 0, dp(10)
+            hint_text: "Start typing to start the test"
+            text_color_focus: "white"
+            text: ""
+            mode: 'rectangle'
+            on_text: self.evaluate_typed_word(self.text.lower())
+    MDFloatLayout:
+        id: restart_layout
+        md_bg_color: "white"
+        MDRaisedButton:
+            id: restart_button
+            text: "Restart"
+            on_release: app.reset()
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+<WordsBox>:
+    padding: dp(50), dp(20)
+    spacing: dp(10), dp(30)
+    md_bg_color: app.theme_cls.primary_light
+    size_hint_y: None
+#    height: dp(180)
+    height: self.minimum_height
+
+<WordLabel>:
+    adaptive_size: True
+    theme_text_color: "Custom"
+    text_color: "#555555"
+
+<ResultsPopup>:
+    id: results_popup
+    orientation: 'vertical'
+    padding: dp(20)
+    spacing: 20
+    size_hint_y: None
+    height: dp(80)
+    MDLabel:
+        id: popup_score_message1
+        text: ""
+        halign: 'center'
+    MDLabel:
+        text: ""
+    MDLabel:
+        id: popup_score_message2
+        text: ""
+        halign: 'center'
